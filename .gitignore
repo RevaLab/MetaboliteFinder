@@ -1,0 +1,5 @@
+/venv
+/output_dir
+.DS_Store
+.idea/
+__pycache__/
