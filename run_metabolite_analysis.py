@@ -17,7 +17,7 @@ p_threshold = sys.argv[4]
 ascending = sys.argv[5]
 percent_cutoff = sys.argv[6]
 
-exclude_unique_pw = True
+exclude_unique_pw = False
 
 tumor = Tumor(input_file,
               db_name,
@@ -54,8 +54,7 @@ for sample_id in tumor.gene_expression_table:
 
         sample.perform_enrichment_analysis_for_percent_genes(percent_genes, percent, exclude_unique_pw)
         tumor.add_enriched_pathways_to_final_summary(sample.percent_enrichments[percent],
-                                                     percent,
-                                                     sample_id)
+                                                     percent)
 
         tumor.add_percent_genes_to_gene_summary(percent,
                                                 percent_genes)

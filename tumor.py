@@ -3,6 +3,7 @@ import os
 import pickle
 
 import pandas as pd
+import numpy as np
 
 
 class Tumor:
@@ -73,7 +74,7 @@ class Tumor:
         print("Finished reading input file")
         return gene_expression_table
 
-    def add_enriched_pathways_to_final_summary(self, enrichment_results, percent, sample_id):
+    def add_enriched_pathways_to_final_summary(self, enrichment_results, percent):
         if not len(enrichment_results):
             return {}
 
@@ -84,7 +85,7 @@ class Tumor:
             if pathway not in self.final_summary[percent]:
                 self.final_summary[percent][pathway] = []
 
-            self.final_summary[percent][pathway].append(sample_id)
+            self.final_summary[percent][pathway].append(enrichment_results[pathway]['pval'])
 
     def add_percent_genes_to_gene_summary(self, percent, genes):
         if percent not in self.gene_summary:
@@ -102,15 +103,19 @@ class Tumor:
 
             for percent in self.final_summary:
                 for pathway in self.final_summary[percent]:
+                    geom_mean = self.geo_mean_overflow(self.final_summary[percent][pathway])
                     row = [percent,
                            pathway,
                            self.db_name,
                            'Occurrences:',
                            len(self.final_summary[percent][pathway]),
+                           'Geom_mean:',
+                           geom_mean,
                            'Nmtb:',
                            len(self.db['dict'][pathway]['metabolites'])
                            ]
                     tsvout.writerow(row)
+        pickle.dump(self.final_summary, open('final_summary.pkl', 'wb'))
         print('finished writing pathway summary')
 
     def write_gene_summary(self):
@@ -158,3 +163,8 @@ class Tumor:
                 row += list(metabolite_summary[metabolite]['pathways'])
                 tsvout.writerow(row)
         print("finished writing metabolite summary")
+
+    @staticmethod
+    def geo_mean_overflow(iterable):
+        a = np.log(iterable)
+        return np.exp(a.sum() / len(a))
