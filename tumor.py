@@ -15,7 +15,8 @@ class Tumor:
                  # show_samples,
                  # show_metabolites,
                  ascending,
-                 percent_cutoff):
+                 percent_cutoff,
+                 base_dir):
 
         yes_or_no = {'y': True, 'n': False}
         """
@@ -31,7 +32,8 @@ class Tumor:
         self.ascending = yes_or_no[ascending]
         self.input_file = input_file
         self.db_name = db_name
-        self.db = pickle.load(open('./databases/{}.pkl'.format(self.db_name), 'rb'))
+        self.base_dir = base_dir
+        self.db = pickle.load(open('{}/databases/{}.pkl'.format(self.base_dir, self.db_name), 'rb'))
         self.enrichment = enrichment
         self.p_threshold = float(p_threshold)
         self.p_threshold_str = p_threshold
@@ -55,15 +57,17 @@ class Tumor:
         input_file_basename = os.path.basename(self.input_file)
         basename_wo_ext = '.'.join(input_file_basename.split(".")[:-1])
         if self.ascending:
-            output_dir = "output_dir/{}_{}_{}_bottom_{}".format(basename_wo_ext,
+            output_dir = "{}/output_dir/{}_{}_{}_bottom_{}".format(self.base_dir,
+                                                                   basename_wo_ext,
+                                                                   self.p_threshold_str,
+                                                                   self.db_name,
+                                                                   self.percent_cutoff_str)
+        else:
+            output_dir = "{}/output_dir/{}_{}_{}_top_{}".format(self.base_dir,
+                                                                basename_wo_ext,
                                                                 self.p_threshold_str,
                                                                 self.db_name,
                                                                 self.percent_cutoff_str)
-        else:
-            output_dir = "output_dir/{}_{}_{}_top_{}".format(basename_wo_ext,
-                                                             self.p_threshold_str,
-                                                             self.db_name,
-                                                             self.percent_cutoff_str)
         if not os.path.isdir(output_dir):
             os.mkdir(output_dir)
 

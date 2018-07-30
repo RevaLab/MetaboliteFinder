@@ -5,6 +5,7 @@
 #source /sc/orga/projects/Signatures/GeneExpressionVulnerability/venv3.6/bin/activate
 
 INPUT_FILE=$1
+BASE_DIR="/Users/calina01/PycharmProjects/MetaboliteFinder"
 
 if [ $# -eq 0 ]
   then
@@ -47,16 +48,24 @@ else
     echo 'Gene expression choice not recognized. Defaulting to downregulated.'
 fi
 
-# RUN SCRIPT
-read -p 'Run script as background process (y for yes, n for no): ' IS_BACKGROUND
+## RUN SCRIPT
+#read -p 'Run script as background process (y for yes, n for no): ' IS_BACKGROUND
+#
+#if [ ${IS_BACKGROUND} == 'y' ] || [ ${IS_BACKGROUND} == 'Y' ]; then
+#    nohup python run_metabolite_analysis.py ${INPUT_FILE} ${DATABASE} ${ENRICHMENT} ${P_THRESHOLD} ${PERCENT_CUTOFF} ${ASCENDING} > GEV.out 2> GEV.err &
+#
+#    echo "Your program is running. You may close this screen and return later."
+#elif [ ${IS_BACKGROUND} == 'n' ] || [ ${IS_BACKGROUND} == 'N' ]; then
+#    python run_metabolite_analysis.py ${INPUT_FILE} ${DATABASE} ${ENRICHMENT} ${P_THRESHOLD} ${ASCENDING} ${PERCENT_CUTOFF}
+#else
+#    echo "Defaulting to foreground."
+#    python run_metabolite_analysis.py ${INPUT_FILE} ${DATABASE} ${ENRICHMENT} ${P_THRESHOLD} ${ASCENDING} ${PERCENT_CUTOFF}
+#fi
 
-if [ ${IS_BACKGROUND} == 'y' ] || [ ${IS_BACKGROUND} == 'Y' ]; then
-    nohup python run_metabolite_analysis.py ${INPUT_FILE} ${DATABASE} ${ENRICHMENT} ${P_THRESHOLD} ${PERCENT_CUTOFF} ${ASCENDING} > GEV.out 2> GEV.err &
+echo "#!/bin/bash
+#module load python/3.6.2
+#module load py_packages/3.6
 
-    echo "Your program is running. You may close this screen and return later."
-elif [ ${IS_BACKGROUND} == 'n' ] || [ ${IS_BACKGROUND} == 'N' ]; then
-    python run_metabolite_analysis.py ${INPUT_FILE} ${DATABASE} ${ENRICHMENT} ${P_THRESHOLD} ${ASCENDING} ${PERCENT_CUTOFF}
-else
-    echo "Defaulting to foreground."
-    python run_metabolite_analysis.py ${INPUT_FILE} ${DATABASE} ${ENRICHMENT} ${P_THRESHOLD} ${ASCENDING} ${PERCENT_CUTOFF}
-fi
+python ${BASE_DIR}/run_metabolite_analysis.py ${INPUT_FILE} ${DATABASE} ${ENRICHMENT} ${P_THRESHOLD} ${ASCENDING} ${PERCENT_CUTOFF} ${BASE_DIR}" > "${BASE_DIR}/run_job.sh"
+
+sh "${BASE_DIR}/run_job.sh"

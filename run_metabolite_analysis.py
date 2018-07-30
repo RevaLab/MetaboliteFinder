@@ -16,6 +16,7 @@ p_threshold = sys.argv[4]
 # show_metabolites = sys.argv[6]
 ascending = sys.argv[5]
 percent_cutoff = sys.argv[6]
+base_dir = sys.argv[7]
 
 exclude_unique_pw = False
 
@@ -26,7 +27,8 @@ tumor = Tumor(input_file,
               # show_samples,
               # show_metabolites,
               ascending,
-              percent_cutoff)
+              percent_cutoff,
+              base_dir)
 
 sample_count = 0
 all_sample_count = len(tumor.gene_expression_table.columns)
